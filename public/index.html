@@ -624,23 +624,35 @@
     let searchQuery = '';
     let selectedLicenseId = null;
 
-    // Resilient API Call (tries backend /api first, then direct Supabase REST)
+    // Resilient API Call (tries local servers on 3001/3000 first, then direct Supabase Cloud REST)
     async function apiCall(endpoint, method = 'GET', body = null) {
+      // 1. Try local Node REST server (active origin, port 3001, port 3000)
+      const serversToTry = [];
       if (window.location.protocol.startsWith('http')) {
+        serversToTry.push('');
+      }
+      serversToTry.push('http://localhost:3001', 'http://localhost:3000');
+
+      for (const base of serversToTry) {
         try {
           const opts = {
             method,
             headers: { 'Content-Type': 'application/json' }
           };
           if (body) opts.body = JSON.stringify(body);
-          const res = await fetch(endpoint, opts);
-          if (res.ok) return await res.json();
+          const res = await fetch(base + endpoint, opts);
+          if (res.ok) {
+            const data = await res.json();
+            if (data && (data.success || data.licenses || data.customers)) {
+              return data;
+            }
+          }
         } catch (e) {
-          console.warn("Local server not available, using Supabase Cloud REST...", e);
+          // try next server
         }
       }
 
-      // Direct Supabase Cloud REST Fallback
+      // 2. Direct Supabase Cloud REST Fallback
       const supabaseHeaders = {
         'apikey': SUPABASE_CONFIG.apiKey,
         'Authorization': 'Bearer ' + SUPABASE_CONFIG.apiKey,
