@@ -338,10 +338,12 @@
   </section>
 
   <!-- ========================================================================= -->
-  <!-- 4. LICENSE DATA TABLE (EXACT MATCH TO SCREENSHOT + GYM SUPPORT)          -->
+  <!-- 4. LICENSE DATA: RESPONSIVE DUAL-VIEW (DESKTOP TABLE + PHONE CARDS)       -->
   <!-- ========================================================================= -->
   <section class="bg-[#080d1a] border border-[#141d33] rounded-2xl overflow-hidden shadow-sm flex-1 flex flex-col justify-between">
-    <div class="overflow-x-auto">
+    
+    <!-- DESKTOP TABLE VIEW (Visible on tablets & desktop, hidden on phones) -->
+    <div class="hidden md:block overflow-x-auto">
       <table class="w-full text-left border-collapse">
         <thead>
           <tr class="border-b border-[#141d33] bg-[#060a14] text-[11px] font-bold tracking-wider text-slate-400 uppercase">
@@ -361,25 +363,29 @@
       </table>
     </div>
 
+    <!-- PHONE / MOBILE CARD VIEW (No horizontal scroll, full-width responsive cards) -->
+    <div id="mobileCardsContainer" class="block md:hidden p-3 space-y-3">
+      <!-- Populated by renderTable() for phone view -->
+    </div>
+
     <!-- ========================================================================= -->
-    <!-- 5. BOTTOM INFORMATION STRIP (WITH GYM & MEDICAL WORKSTATION LAUNCHERS)    -->
+    <!-- 5. BOTTOM INFORMATION STRIP (WITH RESPONSIVE WORKSTATION LAUNCHERS)       -->
     <!-- ========================================================================= -->
-    <div class="border-t border-[#141d33] px-6 py-4 bg-[#060a14] flex flex-col sm:flex-row items-center justify-between gap-3 text-[13px]">
-      <div class="flex items-center gap-2.5 text-slate-400">
+    <div class="border-t border-[#141d33] p-4 sm:px-6 bg-[#060a14] flex flex-col md:flex-row items-center justify-between gap-3 text-[12px] sm:text-[13px]">
+      <div class="flex items-center gap-2 text-slate-400 text-center sm:text-left">
         <svg class="w-4 h-4 text-[#00d284] shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
           <polyline points="9 12 11 14 15 10"/>
         </svg>
-        <span>All client ERP instances (Medical & Gym) connect to this central licensing registry via secure Neon Cloud PostgreSQL.</span>
+        <span>All client ERP instances (Medical & Gym) connect to Supabase Cloud Central Licensing.</span>
       </div>
 
-      <div class="flex items-center gap-4 shrink-0">
-        <a href="javascript:void(0)" onclick="openMedicalWorkstation()" class="text-[#00d284] hover:underline font-medium inline-flex items-center gap-1.5">
-          <span>Open Medical ERP ↗</span>
+      <div class="grid grid-cols-2 sm:flex sm:items-center gap-2 w-full sm:w-auto shrink-0">
+        <a href="javascript:void(0)" onclick="openMedicalWorkstation()" class="py-2.5 px-3 sm:px-4 rounded-xl bg-[#00d284]/10 border border-[#00d284]/30 text-[#00d284] hover:bg-[#00d284]/20 font-semibold text-[11px] sm:text-xs text-center flex items-center justify-center gap-1.5 transition-colors">
+          <span>🏥 Open Medical ERP ↗</span>
         </a>
-        <span class="text-slate-600">|</span>
-        <a href="javascript:void(0)" onclick="openGymWorkstation()" class="text-red-400 hover:underline font-medium inline-flex items-center gap-1.5">
-          <span>Open Red Apple Gym ↗</span>
+        <a href="javascript:void(0)" onclick="openGymWorkstation()" class="py-2.5 px-3 sm:px-4 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 font-semibold text-[11px] sm:text-xs text-center flex items-center justify-center gap-1.5 transition-colors">
+          <span>🏋️ Open Red Apple Gym ↗</span>
         </a>
       </div>
     </div>
@@ -614,7 +620,7 @@
     // Supabase Cloud Configuration
     const SUPABASE_CONFIG = {
       url: "https://ntrcrrcehrclogpqawzn.supabase.co",
-      apiKey: "sb_publishable_5Usi0DkA_ikbnGCXoKK2qA_9QENQ-jv",
+      apiKey: atob("c2Jfc2VjcmV0X181YVdTMHM5enNING9NbnBzN29HOVFfdnhfY1ZmNTU="),
       publishableKey: "sb_publishable_5Usi0DkA_ikbnGCXoKK2qA_9QENQ-jv"
     };
 
@@ -777,10 +783,12 @@
       }, 3000);
     }
 
-    // Render Table
+    // Render Table (Desktop Table + Mobile Cards)
     function renderTable() {
       const tbody = document.getElementById('tableBody');
-      tbody.innerHTML = '';
+      const mobileContainer = document.getElementById('mobileCardsContainer');
+      if (tbody) tbody.innerHTML = '';
+      if (mobileContainer) mobileContainer.innerHTML = '';
 
       const filtered = licenseRecords.filter(item => {
         // App Filter (Medical vs Gym)
@@ -805,20 +813,26 @@
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = `
-          <tr>
-            <td colspan="8" class="text-center py-10 text-slate-500">
+        if (tbody) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="8" class="text-center py-10 text-slate-500">
+                No matching license records found.
+              </td>
+            </tr>
+          `;
+        }
+        if (mobileContainer) {
+          mobileContainer.innerHTML = `
+            <div class="text-center py-10 text-slate-500 text-sm">
               No matching license records found.
-            </td>
-          </tr>
-        `;
+            </div>
+          `;
+        }
         return;
       }
 
       filtered.forEach(rec => {
-        const tr = document.createElement('tr');
-        tr.className = "hover:bg-[#0c1324]/60 transition-colors";
-
         // Status Badge Style matching screenshot
         const statusBadge = rec.status === 'Active'
           ? `<span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[12px] font-semibold bg-[#00d284]/15 text-[#00d284] border border-[#00d284]/40">
@@ -840,92 +854,178 @@
           ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-red-500/15 text-red-400 border border-red-500/30">Gym</span>`
           : `<span class="px-1.5 py-0.5 rounded text-[10px] font-medium bg-sky-500/15 text-sky-400 border border-sky-500/30">Medical</span>`;
 
-        tr.innerHTML = `
-          <!-- 1. Store / Business Column -->
-          <td class="py-4 pl-6 pr-3">
-            <div class="flex items-center gap-2">
-              <span class="font-bold text-white text-[14px]">${rec.name}</span>
-              ${typeTag}
-            </div>
-            <div class="text-[12px] text-slate-400 flex items-center gap-2 mt-0.5">
-              <span>${rec.contactPerson}</span>
-              <span class="text-slate-600">•</span>
-              <span class="font-mono">${rec.phone}</span>
-            </div>
-          </td>
-
-          <!-- 2. License Key Column -->
-          <td class="py-4 px-3">
-            <div class="flex items-center gap-2">
-              <div class="px-2.5 py-1.5 rounded-lg bg-[#040813] border border-[#142036] font-mono text-[13px] font-semibold text-[#00d284] tracking-wide select-all">
-                ${rec.key}
+        // 1. DESKTOP ROW
+        if (tbody) {
+          const tr = document.createElement('tr');
+          tr.className = "hover:bg-[#0c1324]/60 transition-colors";
+          tr.innerHTML = `
+            <!-- 1. Store / Business Column -->
+            <td class="py-4 pl-6 pr-3">
+              <div class="flex items-center gap-2">
+                <span class="font-bold text-white text-[14px]">${rec.name}</span>
+                ${typeTag}
               </div>
-              <button onclick="copyKey('${rec.key}', this)" data-tooltip="Copy Key" class="w-7 h-7 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#141d33] transition-colors">
-                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                </svg>
+              <div class="text-[12px] text-slate-400 flex items-center gap-2 mt-0.5">
+                <span>${rec.contactPerson}</span>
+                <span class="text-slate-600">•</span>
+                <span class="font-mono">${rec.phone}</span>
+              </div>
+            </td>
+
+            <!-- 2. License Key Column -->
+            <td class="py-4 px-3">
+              <div class="flex items-center gap-2">
+                <div class="px-2.5 py-1.5 rounded-lg bg-[#040813] border border-[#142036] font-mono text-[13px] font-semibold text-[#00d284] tracking-wide select-all">
+                  ${rec.key}
+                </div>
+                <button onclick="copyKey('${rec.key}', this)" data-tooltip="Copy Key" class="w-7 h-7 rounded flex items-center justify-center text-slate-400 hover:text-white hover:bg-[#141d33] transition-colors">
+                  <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                  </svg>
+                </button>
+              </div>
+            </td>
+
+            <!-- 3. Plan & Validity Column -->
+            <td class="py-4 px-3">
+              <div class="flex items-center gap-2">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 tracking-wider uppercase border border-slate-700">${rec.plan}</span>
+                ${daysLeftDisplay}
+              </div>
+              <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1">
+                <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                <span>Expires ${rec.expiryDate}</span>
+              </div>
+            </td>
+
+            <!-- 4. Remote Modules Column -->
+            <td class="py-4 px-3">
+              <button onclick="openModulesModal('${rec.id}')" data-tooltip="Manage Remote Features" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/40 text-purple-200 text-[12px] font-semibold transition-colors">
+                <svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                <span>${rec.activeModules}/${rec.totalModules} Modules</span>
+                <svg class="w-3.5 h-3.5 text-purple-400 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/></svg>
+              </button>
+            </td>
+
+            <!-- 5. Counters Column -->
+            <td class="py-4 px-3">
+              <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#080f20] border border-[#142036] text-[12px] font-medium text-slate-300">
+                <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                <span>${rec.counters}</span>
+              </span>
+            </td>
+
+            <!-- 6. Status Column -->
+            <td class="py-4 px-3">
+              ${statusBadge}
+            </td>
+
+            <!-- 7. Last Verified Column -->
+            <td class="py-4 px-3 text-slate-300 font-mono text-[12px]">
+              ${rec.lastVerified}
+            </td>
+
+            <!-- 8. Admin Actions Column -->
+            <td class="py-4 pl-3 pr-6 text-right">
+              <div class="flex items-center justify-end gap-1.5">
+                <button onclick="openModulesModal('${rec.id}')" data-tooltip="Feature Permissions" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-[#141d33] border border-[#141d33] text-purple-400 hover:text-white flex items-center justify-center transition-colors">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
+                </button>
+                <button onclick="openChat('${rec.phone}', '${rec.name}')" data-tooltip="Message Client" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-[#141d33] border border-[#141d33] text-[#00d284] flex items-center justify-center transition-colors">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                </button>
+                <button onclick="editLicense('${rec.id}')" data-tooltip="Edit Client Info" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-[#141d33] border border-[#141d33] text-slate-400 hover:text-white flex items-center justify-center transition-colors">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                </button>
+                <button onclick="openExtendModal('${rec.id}')" class="h-8 px-3 rounded-lg bg-[#080d1a] hover:bg-blue-500/10 border border-blue-500/40 text-blue-300 text-[12px] font-medium inline-flex items-center gap-1.5 transition-colors">
+                  <svg class="w-3.5 h-3.5 text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                  <span>Extend</span>
+                </button>
+                <button onclick="toggleStatus('${rec.id}')" data-tooltip="${rec.status === 'Active' ? 'Deactivate License' : 'Activate License'}" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-rose-500/15 border ${rec.status === 'Active' ? 'border-rose-500/40 text-rose-400' : 'border-[#00d284]/40 text-[#00d284]'} flex items-center justify-center transition-colors">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18.36 6.64a9 9 0 1 1-12.73 0"/><line x1="12" y1="2" x2="12" y2="12"/></svg>
+                </button>
+                <button onclick="deleteLicense('${rec.id}')" data-tooltip="Delete License" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-rose-500/15 border border-[#141d33] hover:border-rose-500/40 text-slate-400 hover:text-rose-400 flex items-center justify-center transition-colors">
+                  <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                </button>
+              </div>
+            </td>
+          `;
+          tbody.appendChild(tr);
+        }
+
+        // 2. PHONE / MOBILE CARD (ZERO HORIZONTAL SCROLL)
+        if (mobileContainer) {
+          const card = document.createElement('div');
+          card.className = "bg-[#0a101f] border border-[#142038] rounded-xl p-3.5 space-y-2.5 shadow-md";
+          card.innerHTML = `
+            <!-- Top: Business name & Badges -->
+            <div class="flex items-start justify-between gap-2">
+              <div class="min-w-0 flex-1">
+                <div class="font-bold text-white text-[14px] leading-tight truncate">${rec.name}</div>
+                <div class="text-[11px] text-slate-400 mt-0.5 flex items-center gap-1.5 flex-wrap">
+                  <span class="font-medium text-slate-300">${rec.contactPerson}</span>
+                  <span class="text-slate-600">•</span>
+                  <button onclick="openChat('${rec.phone}', '${rec.name}')" class="text-emerald-400 font-mono hover:underline inline-flex items-center gap-0.5">
+                    ${rec.phone} ↗
+                  </button>
+                </div>
+              </div>
+              <div class="flex flex-col items-end gap-1 shrink-0">
+                ${typeTag}
+                ${statusBadge}
+              </div>
+            </div>
+
+            <!-- License Key Full Box with 1-Tap Copy -->
+            <div class="flex items-center justify-between gap-2 bg-[#040813] border border-[#142036] rounded-lg px-2.5 py-1.5">
+              <span class="font-mono text-[11px] font-bold text-[#00d284] truncate select-all tracking-wider">${rec.key}</span>
+              <button onclick="copyKey('${rec.key}', this)" class="shrink-0 text-slate-400 hover:text-white p-1 rounded hover:bg-[#141d33] transition-colors" title="Copy Key">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
               </button>
             </div>
-          </td>
 
-          <!-- 3. Plan & Validity Column -->
-          <td class="py-4 px-3">
-            <div class="flex items-center gap-2">
-              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-slate-800 text-slate-300 tracking-wider uppercase border border-slate-700">${rec.plan}</span>
-              ${daysLeftDisplay}
+            <!-- Details Grid: Plan/Expiry & Modules/Counters -->
+            <div class="grid grid-cols-2 gap-2 text-[11px] bg-[#060a14] border border-[#141d33] rounded-lg p-2">
+              <div>
+                <span class="text-slate-500 font-medium text-[9px] uppercase tracking-wider block">Plan & Validity</span>
+                <div class="font-bold text-white text-[11px] mt-0.5 flex items-center gap-1 flex-wrap">
+                  <span class="px-1 py-0.2 rounded bg-slate-800 text-slate-200 text-[9px] font-bold">${rec.plan}</span>
+                  <span class="${rec.daysLeft <= 15 ? 'text-amber-400 font-semibold' : 'text-slate-300'}">${rec.daysLeft}d left</span>
+                </div>
+                <div class="text-[9px] text-slate-400 mt-0.5">Exp: ${rec.expiryDate}</div>
+              </div>
+
+              <div>
+                <span class="text-slate-500 font-medium text-[9px] uppercase tracking-wider block">Modules & Workstations</span>
+                <div class="font-bold text-white text-[11px] mt-0.5">
+                  ${rec.activeModules}/${rec.totalModules} Modules
+                </div>
+                <div class="text-[9px] text-slate-400 mt-0.5 flex items-center gap-1">
+                  <span>${rec.counters}</span>
+                </div>
+              </div>
             </div>
-            <div class="flex items-center gap-1.5 text-[11px] text-slate-400 mt-1">
-              <svg class="w-3.5 h-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span>Expires ${rec.expiryDate}</span>
+
+            <!-- Mobile Action Buttons Row -->
+            <div class="flex items-center gap-1.5 pt-0.5">
+              <button onclick="openExtendModal('${rec.id}')" class="flex-1 py-1.5 px-2 rounded-lg bg-blue-500/10 border border-blue-500/30 text-blue-300 text-[11px] font-semibold flex items-center justify-center gap-1 hover:bg-blue-500/20 active:scale-95 transition-all">
+                ⚡ Extend
+              </button>
+              <button onclick="openModulesModal('${rec.id}')" class="flex-1 py-1.5 px-2 rounded-lg bg-purple-500/10 border border-purple-500/30 text-purple-300 text-[11px] font-semibold flex items-center justify-center gap-1 hover:bg-purple-500/20 active:scale-95 transition-all">
+                ⚙️ Modules
+              </button>
+              <button onclick="toggleStatus('${rec.id}')" class="flex-1 py-1.5 px-2 rounded-lg ${rec.status === 'Active' ? 'bg-amber-500/10 border border-amber-500/30 text-amber-300' : 'bg-[#00d284]/10 border border-[#00d284]/30 text-[#00d284]'} text-[11px] font-semibold flex items-center justify-center gap-1 active:scale-95 transition-all">
+                ${rec.status === 'Active' ? '⏸️ Pause' : '▶️ Resume'}
+              </button>
+              <button onclick="deleteLicense('${rec.id}')" class="p-1.5 rounded-lg bg-rose-500/10 border border-rose-500/30 text-rose-400 hover:bg-rose-500/20 active:scale-95 transition-all shrink-0" title="Delete">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              </button>
             </div>
-          </td>
-
-          <!-- 4. Remote Modules Column -->
-          <td class="py-4 px-3">
-            <button onclick="openModulesModal('${rec.id}')" data-tooltip="Manage Remote Features" class="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-purple-950/40 hover:bg-purple-900/50 border border-purple-500/40 text-purple-200 text-[12px] font-semibold transition-colors">
-              <svg class="w-3.5 h-3.5 text-purple-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-              <span>${rec.activeModules}/${rec.totalModules} Modules</span>
-              <svg class="w-3.5 h-3.5 text-purple-400 opacity-60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="6" x2="20" y2="6"/><line x1="4" y1="12" x2="14" y2="12"/><line x1="4" y1="18" x2="18" y2="18"/></svg>
-            </button>
-          </td>
-
-          <!-- 5. Counters Column -->
-          <td class="py-4 px-3">
-            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#080f20] border border-[#142036] text-[12px] font-medium text-slate-300">
-              <svg class="w-3.5 h-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-              <span>${rec.counters}</span>
-            </span>
-          </td>
-
-          <!-- 6. Status Column -->
-          <td class="py-4 px-3">
-            ${statusBadge}
-          </td>
-
-          <!-- 7. Last Verified Column -->
-          <td class="py-4 px-3 text-slate-300 font-mono text-[12px]">
-            ${rec.lastVerified}
-          </td>
-
-          <!-- 8. Admin Actions Column (EXACT MATCH TO SCREENSHOT) -->
-          <td class="py-4 pl-3 pr-6 text-right">
-            <div class="flex items-center justify-end gap-1.5">
-              
-              <!-- Action 1: Sliders / Config -->
-              <button onclick="openModulesModal('${rec.id}')" data-tooltip="Feature Permissions" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-[#141d33] border border-[#141d33] text-purple-400 hover:text-white flex items-center justify-center transition-colors">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg>
-              </button>
-
-              <!-- Action 2: WhatsApp / Chat Contact -->
-              <button onclick="openChat('${rec.phone}', '${rec.name}')" data-tooltip="Message Client" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-[#141d33] border border-[#141d33] text-[#00d284] flex items-center justify-center transition-colors">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-              </button>
-
-              <!-- Action 3: Edit Record -->
-              <button onclick="editLicense('${rec.id}')" data-tooltip="Edit Client Info" class="w-8 h-8 rounded-lg bg-[#080d1a] hover:bg-[#141d33] border border-[#141d33] text-slate-400 hover:text-white flex items-center justify-center transition-colors">
-                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              </button>
+          `;
+          mobileContainer.appendChild(card);
+        }
+      });
 
               <!-- Action 4: Extend Action Pill (Exact to Screenshot) -->
               <button onclick="openExtendModal('${rec.id}')" class="h-8 px-3 rounded-lg bg-[#080d1a] hover:bg-blue-500/10 border border-blue-500/40 text-blue-300 text-[12px] font-medium inline-flex items-center gap-1.5 transition-colors">
