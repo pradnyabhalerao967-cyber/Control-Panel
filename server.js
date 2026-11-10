@@ -38,7 +38,7 @@ if (supabase.realtime) {
   } catch (e) {}
 }
 
-const PORT = process.env.PORT || 3000;
+const PORT = parseInt(process.env.PORT, 10) || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
 
 // MIME types
@@ -455,18 +455,26 @@ const server = http.createServer(async (req, res) => {
   });
 });
 
-server.on('error', (err) => {
-  if (err.code === 'EADDRINUSE') {
-    console.error(`❌ Port ${PORT} is already in use.`);
-  } else {
-    console.error('❌ Server error:', err.message);
-  }
-});
+// ── Start server with automatic port-fallback ─────────────────────────────
+function startServer(portToUse) {
+  server.removeAllListeners('error');
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      const nextPort = Number(portToUse) + 1;
+      console.warn(`⚠️ Port ${portToUse} is occupied (by Medical ERP or another process). Trying port ${nextPort}...`);
+      startServer(nextPort);
+    } else {
+      console.error('❌ Server error:', err.message);
+    }
+  });
 
-server.listen(PORT, () => {
-  console.log(`\n======================================================`);
-  console.log(`  Central ERP License Dashboard live at:`);
-  console.log(`  http://localhost:${PORT}`);
-  console.log(`  Database: Supabase Cloud (ntrcrrcehrclogpqawzn)`);
-  console.log(`======================================================\n`);
-});
+  server.listen(portToUse, () => {
+    console.log(`\n======================================================`);
+    console.log(`  Central ERP License Dashboard live at:`);
+    console.log(`  http://localhost:${portToUse}`);
+    console.log(`  Database: Supabase Cloud (ntrcrrcehrclogpqawzn)`);
+    console.log(`======================================================\n`);
+  });
+}
+
+startServer(PORT);
