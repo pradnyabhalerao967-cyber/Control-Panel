@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Central ERP Control Panel</string>
+    <string name="header_title">Central ERP License Dashboard</string>
+    <string name="header_subtitle">Medical + Gym Unified • Cloud KMS</string>
+    <string name="supabase_connected">Supabase Connected (Mumbai)</string>
+    <string name="all_apps">All Apps</string>
+    <string name="medical_apps">🏥 Medical</string>
+    <string name="gym_apps">🏋️ Gym</string>
+    <string name="filter_all">All</string>
+    <string name="filter_active">Active</string>
+    <string name="filter_expiring">Expiring Soon</string>
+    <string name="filter_deactivated">Deactivated</string>
+    <string name="search_hint">Search enterprise, key, phone...</string>
+    <string name="create_new_license">Create License Key</string>
+    <string name="total_licenses">Total</string>
+    <string name="active_systems">Active</string>
+    <string name="deactivated">Deactivated</string>
+    <string name="expiring_soon">Expiring</string>
+</resources>
+

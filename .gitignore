@@ -16,9 +16,22 @@ yarn-debug.log*
 yarn-error.log*
 *.log
 
+# Android Build Artifacts
+.gradle/
+build/
+app/build/
+android/.gradle/
+android/build/
+android/app/build/
+android/local.properties
+local.properties
+*.apk
+*.aab
+
 # OS & Editor
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
+*.iml
 

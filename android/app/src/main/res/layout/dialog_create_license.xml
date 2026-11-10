@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/erp_card">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <!-- Title -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Deploy New License Key"
+            android:textColor="@color/erp_text_primary"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Creates cryptographic license directly in Supabase DB"
+            android:textColor="@color/erp_text_muted"
+            android:textSize="12sp" />
+
+        <!-- Enterprise / Customer Name -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="ENTERPRISE / STORE NAME *"
+            android:textColor="@color/erp_text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etCustomerName"
+            android:layout_width="match_parent"
+            android:layout_height="44dp"
+            android:layout_marginTop="6dp"
+            android:background="@drawable/bg_key_box"
+            android:hint="e.g. Apollo Healthcare, Gold's Gym"
+            android:inputType="textCapWords"
+            android:paddingHorizontal="12dp"
+            android:textColor="@color/erp_text_primary"
+            android:textColorHint="@color/erp_text_muted"
+            android:textSize="14sp" />
+
+        <!-- Business Type / Sector -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="APPLICATION SECTOR *"
+            android:textColor="@color/erp_text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/rgSector"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/rbMedical"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:checked="true"
+                android:text="🏥 Medical ERP"
+                android:textColor="@color/badge_medical_text"
+                android:textSize="13sp" />
+
+            <RadioButton
+                android:id="@+id/rbGym"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="🏋️ Red Apple Gym"
+                android:textColor="@color/badge_gym_text"
+                android:textSize="13sp" />
+        </RadioGroup>
+
+        <!-- Plan Tier & Workstations Row -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="PLAN TIER"
+                    android:textColor="@color/erp_text_secondary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinnerPlan"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_key_box"
+                    android:paddingHorizontal="8dp" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="WORKSTATIONS"
+                    android:textColor="@color/erp_text_secondary"
+                    android:textSize="11sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etWorkstations"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_key_box"
+                    android:hint="1"
+                    android:inputType="number"
+                    android:paddingHorizontal="12dp"
+                    android:text="1"
+                    android:textColor="@color/erp_text_primary"
+                    android:textSize="14sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Validity (Days) -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:text="VALIDITY PERIOD (DAYS) *"
+            android:textColor="@color/erp_text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:orientation="horizontal">
+
+            <EditText
+                android:id="@+id/etDaysValidity"
+                android:layout_width="0dp"
+                android:layout_height="44dp"
+                android:layout_weight="1"
+                android:background="@drawable/bg_key_box"
+                android:hint="e.g. 30, 90, 365"
+                android:inputType="number"
+                android:paddingHorizontal="12dp"
+                android:text="30"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="14sp" />
+
+            <Button
+                android:id="@+id/btnQuick30"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_marginStart="6dp"
+                android:text="30d"
+                android:textColor="@color/erp_accent" />
+
+            <Button
+                android:id="@+id/btnQuick365"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="44dp"
+                android:layout_marginStart="4dp"
+                android:text="1yr"
+                android:textColor="@color/erp_accent" />
+        </LinearLayout>
+
+        <!-- Modules Section -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="ENABLED REMOTE MODULES"
+            android:textColor="@color/erp_text_secondary"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <!-- Checkboxes Grid -->
+        <GridLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="6dp"
+            android:columnCount="2">
+
+            <CheckBox
+                android:id="@+id/cbBilling"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Billing / POS"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cbInventory"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Inventory"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cbPatients"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Patients / OPD"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cbPharmacy"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Pharmacy Store"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cbReports"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Analytics / Reports"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cbMembers"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Members"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cbAttendance"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Attendance / Bio"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+
+            <CheckBox
+                android:id="@+id/cbPackages"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_columnWeight="1"
+                android:checked="true"
+                android:text="Packages / Plans"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp" />
+        </GridLayout>
+
+        <!-- Action Buttons -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:gravity="end"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Widget.Material3.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:textColor="@color/erp_text_muted" />
+
+            <Button
+                android:id="@+id/btnDeploy"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:backgroundTint="@color/erp_accent"
+                android:text="Deploy to Supabase"
+                android:textColor="@color/erp_bg"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
+

@@ -1,0 +1,284 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="14dp"
+    android:layout_marginVertical="6dp"
+    app:cardBackgroundColor="@color/erp_card"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="0dp"
+    app:strokeColor="@color/erp_border"
+    app:strokeWidth="1dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <!-- Top Row: Sector Badge + Plan Tier Badge + Status Indicator -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tvSectorBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_medical"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="🏥 Medical"
+                android:textColor="@color/badge_medical_text"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tvPlanBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_badge_plan"
+                android:paddingHorizontal="8dp"
+                android:paddingVertical="4dp"
+                android:text="PRO"
+                android:textColor="@color/plan_pro_text"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <TextView
+                android:id="@+id/tvStatusBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_badge_active"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="● Active"
+                android:textColor="@color/status_active_text"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <!-- Customer / Enterprise Name -->
+        <TextView
+            android:id="@+id/tvCustomerName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/erp_text_primary"
+            android:textSize="17sp"
+            android:textStyle="bold"
+            tools:text="Bhalerao Medical &amp; General Store" />
+
+        <!-- License Key Row with Copy Button -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/bg_key_box"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="8dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:contentDescription="Key"
+                android:src="@drawable/ic_key" />
+
+            <TextView
+                android:id="@+id/tvLicenseKey"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:fontFamily="monospace"
+                android:textColor="@color/erp_text_primary"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                tools:text="CARE-GKVK-SK07-QC25-2B26" />
+
+            <ImageButton
+                android:id="@+id/btnCopyKey"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:contentDescription="Copy Key"
+                android:src="@drawable/ic_copy" />
+        </LinearLayout>
+
+        <!-- Stats & Meta Row: Validity, Modules, Workstations -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Days Left & Expiry -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1.2"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvDaysLeft"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/erp_accent"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="8 days left" />
+
+                <TextView
+                    android:id="@+id/tvExpiryDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/erp_text_muted"
+                    android:textSize="11sp"
+                    tools:text="Expires 14/11/2026" />
+            </LinearLayout>
+
+            <!-- Modules Count -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center_horizontal"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvModulesCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/erp_text_secondary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="5/6 Modules" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Remote Access"
+                    android:textColor="@color/erp_text_muted"
+                    android:textSize="11sp" />
+            </LinearLayout>
+
+            <!-- Workstations Counter -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.8"
+                android:gravity="end"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvWorkstations"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/erp_text_secondary"
+                    android:textSize="13sp"
+                    android:textStyle="bold"
+                    tools:text="1 PC" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Authorized"
+                    android:textColor="@color/erp_text_muted"
+                    android:textSize="11sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- Divider -->
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginVertical="12dp"
+            android:background="@color/erp_border" />
+
+        <!-- Actions Row: Extend, Modules, Toggle Status, Delete -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <!-- Extend Button (+30d) -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnExtend"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_weight="1"
+                android:paddingHorizontal="6dp"
+                android:text="+30 Days"
+                android:textColor="@color/erp_accent"
+                android:textSize="11sp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_extend"
+                app:iconSize="14dp"
+                app:iconTint="@color/erp_accent"
+                app:strokeColor="@color/erp_border_light" />
+
+            <!-- Remote Modules Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnModules"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:paddingHorizontal="6dp"
+                android:text="Modules"
+                android:textColor="@color/erp_text_secondary"
+                android:textSize="11sp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_module"
+                app:iconSize="14dp"
+                app:iconTint="@color/erp_text_secondary"
+                app:strokeColor="@color/erp_border_light" />
+
+            <!-- Status Toggle Button -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnToggleStatus"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                android:paddingHorizontal="6dp"
+                android:text="Pause"
+                android:textColor="@color/status_deactivated_text"
+                android:textSize="11sp"
+                app:cornerRadius="10dp"
+                app:icon="@drawable/ic_power"
+                app:iconSize="14dp"
+                app:iconTint="@color/status_deactivated_text"
+                app:strokeColor="@color/erp_border_light" />
+
+            <!-- Delete Button -->
+            <ImageButton
+                android:id="@+id/btnDelete"
+                android:layout_width="38dp"
+                android:layout_height="38dp"
+                android:layout_marginStart="6dp"
+                android:background="@drawable/bg_delete_btn"
+                android:contentDescription="Delete License"
+                android:src="@drawable/ic_delete" />
+        </LinearLayout>
+
+    </LinearLayout>
+</com.google.android.material.card.MaterialCardView>
+
