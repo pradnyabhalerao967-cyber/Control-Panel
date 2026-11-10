@@ -11,12 +11,32 @@ require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const WebSocket = require('ws');
 
+// ── Global Error Guard ───────────────────────────────────────────────────────
+process.on('uncaughtException', (err) => {
+  console.error('⚠️ [UNCAUGHT EXCEPTION GUARD]:', err.message || err);
+});
+
+process.on('unhandledRejection', (reason) => {
+  console.error('⚠️ [UNHANDLED REJECTION GUARD]:', reason && reason.message ? reason.message : reason);
+});
+
 // ── Supabase client ──────────────────────────────────────────────────────────
 const supabase = createClient(
   process.env.VITE_SUPABASE_URL,
   process.env.SUPABASE_SERVICE_ROLE_KEY,
-  { realtime: { transport: WebSocket } }
+  {
+    auth: { persistSession: false },
+    realtime: { transport: WebSocket }
+  }
 );
+
+if (supabase.realtime) {
+  try {
+    supabase.realtime.on('error', (err) => {
+      console.warn('Supabase Realtime socket notice:', err && err.message ? err.message : err);
+    });
+  } catch (e) {}
+}
 
 const PORT = process.env.PORT || 3000;
 const PUBLIC_DIR = path.join(__dirname, 'public');
@@ -433,6 +453,14 @@ const server = http.createServer(async (req, res) => {
       res.end(content, 'utf-8');
     }
   });
+});
+
+server.on('error', (err) => {
+  if (err.code === 'EADDRINUSE') {
+    console.error(`❌ Port ${PORT} is already in use.`);
+  } else {
+    console.error('❌ Server error:', err.message);
+  }
 });
 
 server.listen(PORT, () => {
