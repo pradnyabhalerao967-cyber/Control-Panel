@@ -222,20 +222,20 @@
   </header>
 
   <!-- ========================================================================= -->
-  <!-- 2. FOUR STATISTIC CARDS (EXACT MATCH TO SCREENSHOT)                       -->
+  <!-- 2. FOUR STATISTIC CARDS (RESPONSIVE PHONE & DESKTOP LAYOUT)                 -->
   <!-- ========================================================================= -->
-  <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+  <section class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
     
     <!-- CARD 1: TOTAL LICENSES (Blue Accent) -->
-    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-2xl p-5 flex items-center justify-between overflow-hidden group">
+    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 flex items-start justify-between overflow-hidden group hover:border-blue-500/40 transition-all">
       <div class="absolute top-0 left-0 bottom-0 w-1 bg-blue-500 rounded-l"></div>
-      <div>
-        <span class="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Total Licenses</span>
-        <div id="statTotal" class="text-[32px] font-bold text-white mt-0.5 tracking-tight">4</div>
-        <div class="text-[12px] text-slate-400 mt-0.5">Issued workstations</div>
+      <div class="min-w-0 pr-1">
+        <span class="text-[10px] sm:text-[11px] font-semibold tracking-wider text-slate-400 uppercase block truncate">Total Licenses</span>
+        <div id="statTotal" class="text-xl sm:text-2xl md:text-[32px] font-bold text-white mt-0.5 tracking-tight">4</div>
+        <div class="text-[10px] sm:text-[11px] md:text-[12px] text-slate-400 mt-0.5 truncate">Issued workstations</div>
       </div>
-      <div class="w-12 h-12 rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 shrink-0 rounded-lg sm:rounded-xl bg-blue-500/10 border border-blue-500/30 flex items-center justify-center text-blue-400">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
           <polyline points="14 2 14 8 20 8"/>
           <line x1="16" y1="13" x2="8" y2="13"/>
@@ -246,30 +246,30 @@
     </div>
 
     <!-- CARD 2: ACTIVE SYSTEMS (Green Accent) -->
-    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-2xl p-5 flex items-center justify-between overflow-hidden group">
+    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 flex items-start justify-between overflow-hidden group hover:border-[#00d284]/40 transition-all">
       <div class="absolute top-0 left-0 bottom-0 w-1 bg-[#00d284] rounded-l"></div>
-      <div>
-        <span class="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Active Systems</span>
-        <div id="statActive" class="text-[32px] font-bold text-[#00d284] mt-0.5 tracking-tight">3</div>
-        <div class="text-[12px] text-slate-400 mt-0.5">Operational & authorized</div>
+      <div class="min-w-0 pr-1">
+        <span class="text-[10px] sm:text-[11px] font-semibold tracking-wider text-slate-400 uppercase block truncate">Active Systems</span>
+        <div id="statActive" class="text-xl sm:text-2xl md:text-[32px] font-bold text-[#00d284] mt-0.5 tracking-tight">3</div>
+        <div class="text-[10px] sm:text-[11px] md:text-[12px] text-slate-400 mt-0.5 truncate">Operational & authorized</div>
       </div>
-      <div class="w-12 h-12 rounded-xl bg-[#00d284]/10 border border-[#00d284]/30 flex items-center justify-center text-[#00d284]">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 shrink-0 rounded-lg sm:rounded-xl bg-[#00d284]/10 border border-[#00d284]/30 flex items-center justify-center text-[#00d284]">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>
         </svg>
       </div>
     </div>
 
     <!-- CARD 3: DEACTIVATED (Red Accent) -->
-    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-2xl p-5 flex items-center justify-between overflow-hidden group">
+    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 flex items-start justify-between overflow-hidden group hover:border-rose-500/40 transition-all">
       <div class="absolute top-0 left-0 bottom-0 w-1 bg-rose-500 rounded-l"></div>
-      <div>
-        <span class="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Deactivated</span>
-        <div id="statDeactivated" class="text-[32px] font-bold text-rose-500 mt-0.5 tracking-tight">1</div>
-        <div class="text-[12px] text-slate-400 mt-0.5">Remotely paused/locked</div>
+      <div class="min-w-0 pr-1">
+        <span class="text-[10px] sm:text-[11px] font-semibold tracking-wider text-slate-400 uppercase block truncate">Deactivated</span>
+        <div id="statDeactivated" class="text-xl sm:text-2xl md:text-[32px] font-bold text-rose-500 mt-0.5 tracking-tight">1</div>
+        <div class="text-[10px] sm:text-[11px] md:text-[12px] text-slate-400 mt-0.5 truncate">Remotely paused/locked</div>
       </div>
-      <div class="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 shrink-0 rounded-lg sm:rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="12" cy="12" r="10"/>
           <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>
         </svg>
@@ -277,15 +277,15 @@
     </div>
 
     <!-- CARD 4: EXPIRING / EXPIRED (Amber Accent) -->
-    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-2xl p-5 flex items-center justify-between overflow-hidden group">
+    <div class="relative bg-[#080d1a] border border-[#141d33] rounded-xl sm:rounded-2xl p-3 sm:p-4 md:p-5 flex items-start justify-between overflow-hidden group hover:border-amber-500/40 transition-all">
       <div class="absolute top-0 left-0 bottom-0 w-1 bg-amber-500 rounded-l"></div>
-      <div>
-        <span class="text-[11px] font-semibold tracking-wider text-slate-400 uppercase">Expiring / Expired</span>
-        <div id="statExpiring" class="text-[32px] font-bold text-amber-400 mt-0.5 tracking-tight">1 / 0</div>
-        <div class="text-[12px] text-slate-400 mt-0.5">&lt; 15 days left</div>
+      <div class="min-w-0 pr-1">
+        <span class="text-[10px] sm:text-[11px] font-semibold tracking-wider text-slate-400 uppercase block truncate">Expiring / Expired</span>
+        <div id="statExpiring" class="text-xl sm:text-2xl md:text-[32px] font-bold text-amber-400 mt-0.5 tracking-tight">1 / 0</div>
+        <div class="text-[10px] sm:text-[11px] md:text-[12px] text-slate-400 mt-0.5 truncate">&lt; 15 days left</div>
       </div>
-      <div class="w-12 h-12 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+      <div class="w-7 h-7 sm:w-9 sm:h-9 md:w-11 md:h-11 shrink-0 rounded-lg sm:rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+        <svg class="w-3.5 h-3.5 sm:w-4 sm:h-4 md:w-5 md:h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M5 22h14"/>
           <path d="M5 2h14"/>
           <path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/>
