@@ -1,0 +1,288 @@
+{
+  "users": [
+    {
+      "id": "usr-superadmin-01",
+      "username": "superadmin",
+      "email": "superadmin@centralplatform.io",
+      "password_hash": "admin123",
+      "full_name": "Pradnya Bhalerao (Super Administrator)",
+      "role": "SUPER_ADMIN",
+      "app_access": "ALL",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-gym-01",
+      "username": "gym_manager",
+      "email": "karan@redapplegym.com",
+      "password_hash": "gym123",
+      "full_name": "Karan Malhotra (Gym Manager)",
+      "role": "GYM_ADMIN",
+      "app_access": "RED_APPLE_GYM",
+      "status": "ACTIVE"
+    },
+    {
+      "id": "usr-med-01",
+      "username": "med_director",
+      "email": "pradnya.shejwal@bhaleraomedical.com",
+      "password_hash": "med123",
+      "full_name": "Pradnya Shejwal (Medical Administrator)",
+      "role": "MEDICAL_ADMIN",
+      "app_access": "BHALERAO_MEDICAL",
+      "status": "ACTIVE"
+    }
+  ],
+  "customers": [
+    {
+      "id": "cust-bm-001",
+      "customer_name": "Bhalerao Medical",
+      "business_type": "BHALERAO_MEDICAL",
+      "contact_person": "Pradnya Shejwal",
+      "email": "pradnya.shejwal@bhaleraomedical.com",
+      "phone": "8356039301",
+      "city": "Vashi, Navi Mumbai, MH",
+      "status": "ACTIVE",
+      "current_plan": "PRO",
+      "license_key": "CARE-GKVK-SK07-QC25-2B26",
+      "created_at": "2026-01-05T09:30:00Z"
+    },
+    {
+      "id": "cust-bm-002",
+      "customer_name": "Care hospital",
+      "business_type": "BHALERAO_MEDICAL",
+      "contact_person": "KAustubh",
+      "email": "kaustubh@carehospital.org",
+      "phone": "7276939301",
+      "city": "Thane, MH",
+      "status": "DEACTIVATED",
+      "current_plan": "STANDARD",
+      "license_key": "CARE-YQOZ-87VP-QG3B-2B26",
+      "created_at": "2026-03-12T10:15:00Z"
+    },
+    {
+      "id": "cust-rag-001",
+      "customer_name": "Red Apple Gym — Sector 28 Flagship",
+      "business_type": "RED_APPLE_GYM",
+      "contact_person": "Karan Malhotra",
+      "email": "karan@redapplegym.com",
+      "phone": "9820144512",
+      "city": "Navi Mumbai, MH",
+      "status": "ACTIVE",
+      "current_plan": "PRO",
+      "license_key": "RAG-PRO-2026-SK09-8812",
+      "created_at": "2026-01-10T10:00:00Z"
+    },
+    {
+      "id": "cust-rag-002",
+      "customer_name": "Red Apple Gym — Thane West Branch",
+      "business_type": "RED_APPLE_GYM",
+      "contact_person": "Ramesh Jadhav",
+      "email": "ramesh.j@redapplegym.com",
+      "phone": "9769712340",
+      "city": "Thane, MH",
+      "status": "ACTIVE",
+      "current_plan": "STANDARD",
+      "license_key": "RAG-STD-2026-TH14-4402",
+      "created_at": "2026-03-15T11:20:00Z"
+    }
+  ],
+  "subscription_plans": [
+    {
+      "id": "plan-rag-std",
+      "plan_code": "RAG-STANDARD",
+      "plan_name": "Gym Standard Tier",
+      "business_type": "RED_APPLE_GYM",
+      "tier": "STANDARD",
+      "monthly_price": 2499,
+      "annual_price": 24990,
+      "max_users": 3,
+      "allowed_modules": ["members", "attendance", "fees", "reports"],
+      "description": "Essential member tracking and fee management"
+    },
+    {
+      "id": "plan-rag-pro",
+      "plan_code": "RAG-PRO",
+      "plan_name": "Gym Enterprise Pro",
+      "business_type": "RED_APPLE_GYM",
+      "tier": "PRO",
+      "monthly_price": 4999,
+      "annual_price": 49990,
+      "max_users": 15,
+      "allowed_modules": ["members", "attendance", "fees", "trainers", "workouts", "diet", "reports", "analytics"],
+      "description": "Complete facility operations, custom diet/workout routines & analytics"
+    },
+    {
+      "id": "plan-bm-std",
+      "plan_code": "BM-STANDARD",
+      "plan_name": "Medical Standard Dispensary",
+      "business_type": "BHALERAO_MEDICAL",
+      "tier": "STANDARD",
+      "monthly_price": 2999,
+      "annual_price": 29990,
+      "max_users": 4,
+      "allowed_modules": ["billing", "inventory", "expiry"],
+      "description": "Patient records, clinical appointments and pharmacy billing"
+    },
+    {
+      "id": "plan-bm-pro",
+      "plan_code": "BM-PRO",
+      "plan_name": "Medical Hospital & Pharmacy Suite",
+      "business_type": "BHALERAO_MEDICAL",
+      "tier": "PRO",
+      "monthly_price": 5999,
+      "annual_price": 59990,
+      "max_users": 25,
+      "allowed_modules": ["billing", "inventory", "expiry", "prescriptions", "suppliers", "reports"],
+      "description": "Full clinical operations, GST billing, multi-batch drug expiry & supplier POs"
+    }
+  ],
+  "licenses": [
+    {
+      "id": "rec-1",
+      "license_key": "CARE-GKVK-SK07-QC25-2B26",
+      "customer_id": "cust-bm-001",
+      "customer_name": "Bhalerao Medical",
+      "contact_person": "Pradnya Shejwal",
+      "phone": "8356039301",
+      "business_type": "BHALERAO_MEDICAL",
+      "plan_tier": "PRO",
+      "status": "Active",
+      "activation_date": "2026-01-05",
+      "expiration_date": "2026-11-14",
+      "days_left": 8,
+      "counters": "1 PC",
+      "last_verified": "2/11/2026",
+      "features": {
+        "billing": true,
+        "inventory": false,
+        "expiry": false,
+        "prescriptions": false,
+        "suppliers": false,
+        "reports": false
+      },
+      "last_heartbeat": "2/11/2026",
+      "cluster_node": "neon-postgres-mumbai-01"
+    },
+    {
+      "id": "rec-2",
+      "license_key": "CARE-YQOZ-87VP-QG3B-2B26",
+      "customer_id": "cust-bm-002",
+      "customer_name": "Care hospital",
+      "contact_person": "KAustubh",
+      "phone": "7276939301",
+      "business_type": "BHALERAO_MEDICAL",
+      "plan_tier": "STANDARD",
+      "status": "Deactivated",
+      "activation_date": "2026-03-12",
+      "expiration_date": "2026-12-14",
+      "days_left": 38,
+      "counters": "1 PC",
+      "last_verified": "31/10/2026",
+      "features": {
+        "billing": true,
+        "inventory": true,
+        "expiry": true,
+        "prescriptions": true,
+        "suppliers": true,
+        "reports": false
+      },
+      "last_heartbeat": "31/10/2026",
+      "cluster_node": "neon-postgres-mumbai-02"
+    },
+    {
+      "id": "rec-3",
+      "license_key": "RAG-PRO-2026-SK09-8812",
+      "customer_id": "cust-rag-001",
+      "customer_name": "Red Apple Gym — Sector 28 Flagship",
+      "contact_person": "Karan Malhotra",
+      "phone": "9820144512",
+      "business_type": "RED_APPLE_GYM",
+      "plan_tier": "PRO",
+      "status": "Active",
+      "activation_date": "2026-01-10",
+      "expiration_date": "2027-01-10",
+      "days_left": 64,
+      "counters": "5 PCs",
+      "last_verified": "Today",
+      "features": {
+        "members": true,
+        "attendance": true,
+        "fees": true,
+        "trainers": true,
+        "workouts": true,
+        "diet": true,
+        "reports": true,
+        "analytics": true
+      },
+      "last_heartbeat": "Just now",
+      "cluster_node": "neon-postgres-pune-01"
+    },
+    {
+      "id": "rec-4",
+      "license_key": "RAG-STD-2026-TH14-4402",
+      "customer_id": "cust-rag-002",
+      "customer_name": "Red Apple Gym — Thane West Branch",
+      "contact_person": "Ramesh Jadhav",
+      "phone": "9769712340",
+      "business_type": "RED_APPLE_GYM",
+      "plan_tier": "STANDARD",
+      "status": "Active",
+      "activation_date": "2026-03-15",
+      "expiration_date": "2026-11-28",
+      "days_left": 21,
+      "counters": "2 PCs",
+      "last_verified": "Yesterday",
+      "features": {
+        "members": true,
+        "attendance": true,
+        "fees": true,
+        "trainers": false,
+        "workouts": false,
+        "diet": false,
+        "reports": true,
+        "analytics": false
+      },
+      "last_heartbeat": "14 mins ago",
+      "cluster_node": "neon-postgres-pune-02"
+    }
+  ],
+  "gym_members": [
+    {
+      "id": "mem-101",
+      "member_code": "RAG-M-0101",
+      "full_name": "Rohit Verma",
+      "phone": "+91 98200 11223",
+      "membership_type": "Annual Platinum",
+      "status": "ACTIVE",
+      "assigned_trainer": "Devraj Shinde"
+    },
+    {
+      "id": "mem-102",
+      "member_code": "RAG-M-0102",
+      "full_name": "Ananya Sen",
+      "phone": "+91 97690 33445",
+      "membership_type": "Quarterly Pro",
+      "status": "EXPIRING",
+      "assigned_trainer": "Priya Nair"
+    }
+  ],
+  "medical_patients": [
+    {
+      "id": "pat-01",
+      "patient_code": "BM-PAT-4401",
+      "full_name": "Sunil Gavaskar Kadam",
+      "phone": "+91 98201 99882",
+      "allergies": "Penicillin",
+      "status": "Under Care"
+    }
+  ],
+  "audit_logs": [
+    {
+      "id": "log-01",
+      "timestamp": "2026-11-07T12:45:10Z",
+      "user": "Pradnya Bhalerao (Super Admin)",
+      "action": "KMS_TELEMETRY_SYNC",
+      "details": "Neon Cloud PostgreSQL licensing replication verified 100% synchronized across Medical & Gym nodes",
+      "ip": "127.0.0.1"
+    }
+  ]
+}
