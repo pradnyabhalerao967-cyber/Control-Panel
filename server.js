@@ -6,7 +6,6 @@
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
-const url = require('url');
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 const WebSocket = require('ws');
@@ -176,14 +175,45 @@ async function syncLicensesToLiveDB() {
   }
 }
 
+// ── License helpers ──────────────────────────────────────────────────────────
+const registeredMachines = new Map();
+
+function computeDaysLeft(expirationDate, fallbackDays = 0) {
+  if (!expirationDate || typeof expirationDate !== 'string') return fallbackDays;
+  const match = expirationDate.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (!match) return fallbackDays;
+  const expUtc = Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3]));
+  const now = new Date();
+  const todayUtc = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  return Math.round((expUtc - todayUtc) / 86400000);
+}
+
+function parseSeatLimit(counters) {
+  if (typeof counters === 'number' && counters > 0) return Math.floor(counters);
+  if (typeof counters === 'string') {
+    const m = counters.match(/\d+/);
+    if (m && Number(m[0]) > 0) return Number(m[0]);
+  } else if (counters && typeof counters === 'object') {
+    const num = Number(counters.pcs || counters.seats || counters.devices || 1);
+    if (Number.isFinite(num) && num > 0) return Math.floor(num);
+  }
+  return 1;
+}
+
 // ── Supabase helpers ─────────────────────────────────────────────────────────
 async function fetchSupabaseLicenses() {
-  const { data, error } = await supabase.from('licenses').select('*');
+  const { data, error } = await supabase
+    .from('licenses')
+    .select('*')
+    .order('created_at', { ascending: false });
   if (error) {
     console.error('Supabase fetch error:', error.message);
     return [];
   }
-  return data || [];
+  return (data || []).map(row => ({
+    ...row,
+    days_left: computeDaysLeft(row.expiration_date, Number(row.days_left || 0))
+  }));
 }
 
 async function upsertSupabaseLicense(lic) {
@@ -206,13 +236,21 @@ async function upsertSupabaseLicense(lic) {
     .from('licenses')
     .upsert(row, { onConflict: 'license_key', returning: 'minimal' });
 
-  if (error) console.error('Supabase upsert error:', error.message);
-  else console.log(`✅ Supabase upserted: ${lic.license_key}`);
+  if (error) {
+    console.error('Supabase upsert error:', error.message);
+    return error;
+  }
+  console.log(`✅ Supabase upserted: ${lic.license_key}`);
+  return null;
 }
 
 async function deleteSupabaseLicense(license_key) {
   const { error } = await supabase.from('licenses').delete().eq('license_key', license_key);
-  if (error) console.error('Supabase delete error:', error.message);
+  if (error) {
+    console.error('Supabase delete error:', error.message);
+    return error;
+  }
+  return null;
 }
 
 // ── Load database from Supabase on startup ───────────────────────────────────
@@ -248,7 +286,7 @@ function sendJSON(res, statusCode, data) {
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*',
     'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Admin-Passcode'
   });
   res.end(JSON.stringify(data));
 }
@@ -266,17 +304,25 @@ const server = http.createServer(async (req, res) => {
     res.writeHead(204, {
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization'
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Admin-Passcode'
     });
     return res.end();
   }
 
-  const parsedUrl = url.parse(req.url, true);
+  const parsedUrl = new URL(req.url, `http://${req.headers.host || 'localhost'}`);
   const pathname = parsedUrl.pathname;
   const method = req.method;
 
   // ── API ROUTES ───────────────────────────────────────────────────────────
   if (pathname.startsWith('/api/')) {
+    const requiredPasscode = (process.env.ADMIN_PASSCODE || '').trim();
+    const isPublicEndpoint = pathname === '/api/license/verify';
+    if (requiredPasscode && !isPublicEndpoint) {
+      const provided = String(req.headers['x-admin-passcode'] || '').trim();
+      if (provided !== requiredPasscode) {
+        return sendJSON(res, 401, { success: false, error: 'Admin passcode required' });
+      }
+    }
     try {
 
       // ── DB STATUS ──
@@ -324,15 +370,18 @@ const server = http.createServer(async (req, res) => {
         const now = new Date().toISOString();
         if (!newLic.created_at) newLic.created_at = now;
         newLic.updated_at = now;
-        newLic.days_left = newLic.days_left || 0;
+        newLic.days_left = newLic.days_left !== undefined ? newLic.days_left : 0;
         newLic.features = newLic.features || {};
         newLic.status = newLic.status || 'Active';
 
         // Save to Supabase (single source of truth)
-        await upsertSupabaseLicense(newLic);
+        const upsertErr = await upsertSupabaseLicense(newLic);
+        if (upsertErr) {
+          return sendJSON(res, 500, { success: false, error: upsertErr.message });
+        }
 
         // Update in-memory cache
-        db.licenses.push(newLic);
+        db.licenses.unshift(newLic);
 
         // Optional: sync to local Prisma dev.db
         await syncLicensesToLiveDB();
@@ -343,18 +392,32 @@ const server = http.createServer(async (req, res) => {
       // ── UPDATE LICENSE ──
       if (pathname === '/api/licenses/update' && method === 'PUT') {
         const body = await parseBody(req);
-        const { license_id, status, extend_days, features } = body;
-        const lic = (db.licenses || []).find(
+        const {
+          license_id, status, extend_days, features,
+          customer_name, plan_tier, counters, days_left, expiration_date
+        } = body;
+        let lic = (db.licenses || []).find(
           l => l.id === license_id || l.license_key === license_id
         );
+        if (!lic) {
+          await loadDatabase();
+          lic = (db.licenses || []).find(
+            l => l.id === license_id || l.license_key === license_id
+          );
+        }
 
         if (!lic) {
           return sendJSON(res, 404, { success: false, error: 'License not found' });
         }
 
         if (status) lic.status = status;
-        if (extend_days) {
-          lic.days_left = (lic.days_left || 0) + parseInt(extend_days);
+        if (customer_name) lic.customer_name = customer_name;
+        if (plan_tier) lic.plan_tier = plan_tier;
+        if (counters) lic.counters = counters;
+        if (days_left !== undefined) lic.days_left = parseInt(days_left, 10);
+        if (expiration_date) lic.expiration_date = expiration_date;
+        if (extend_days && days_left === undefined) {
+          lic.days_left = (lic.days_left || 0) + parseInt(extend_days, 10);
           const cur = new Date();
           cur.setDate(cur.getDate() + lic.days_left);
           lic.expiration_date = cur.toISOString().slice(0, 10);
@@ -366,7 +429,10 @@ const server = http.createServer(async (req, res) => {
         lic.updated_at = new Date().toISOString();
 
         // Persist to Supabase
-        await upsertSupabaseLicense(lic);
+        const upsertErr = await upsertSupabaseLicense(lic);
+        if (upsertErr) {
+          return sendJSON(res, 500, { success: false, error: upsertErr.message });
+        }
         await syncLicensesToLiveDB();
 
         return sendJSON(res, 200, { success: true, license: lic });
@@ -376,9 +442,15 @@ const server = http.createServer(async (req, res) => {
       if (pathname === '/api/features/toggle' && method === 'POST') {
         const body = await parseBody(req);
         const { license_id, feature_key, enabled } = body;
-        const lic = (db.licenses || []).find(
+        let lic = (db.licenses || []).find(
           l => l.id === license_id || l.license_key === license_id
         );
+        if (!lic) {
+          await loadDatabase();
+          lic = (db.licenses || []).find(
+            l => l.id === license_id || l.license_key === license_id
+          );
+        }
 
         if (!lic) {
           return sendJSON(res, 404, { success: false, error: 'License not found' });
@@ -389,7 +461,10 @@ const server = http.createServer(async (req, res) => {
         lic.updated_at = new Date().toISOString();
 
         // Persist to Supabase
-        await upsertSupabaseLicense(lic);
+        const upsertErr = await upsertSupabaseLicense(lic);
+        if (upsertErr) {
+          return sendJSON(res, 500, { success: false, error: upsertErr.message });
+        }
         await syncLicensesToLiveDB();
 
         return sendJSON(res, 200, { success: true, license: lic });
@@ -398,18 +473,44 @@ const server = http.createServer(async (req, res) => {
       // ── LICENSE VERIFICATION ──
       if (pathname === '/api/license/verify' && method === 'POST') {
         const body = await parseBody(req);
-        const { license_key } = body;
+        const { license_key, machine_id } = body;
+        const fresh = await fetchSupabaseLicenses();
+        if (fresh.length) db.licenses = fresh;
         const lic = (db.licenses || []).find(l => l.license_key === license_key);
         if (!lic) {
           return sendJSON(res, 404, { valid: false, error: 'License key not registered in central KMS' });
         }
+        const computedDaysLeft = computeDaysLeft(lic.expiration_date, Number(lic.days_left || 0));
+        const isExpired = computedDaysLeft <= 0;
+        const seatsMax = parseSeatLimit(lic.counters);
+        const machineSet = registeredMachines.get(license_key) || new Set();
+        let seatLimitReached = false;
+
+        if (machine_id && typeof machine_id === 'string' && machine_id.trim()) {
+          const cleanId = machine_id.trim();
+          if (!machineSet.has(cleanId)) {
+            if (machineSet.size >= seatsMax) {
+              seatLimitReached = true;
+            } else {
+              machineSet.add(cleanId);
+              registeredMachines.set(license_key, machineSet);
+            }
+          }
+        }
+
+        const isValid = lic.status === 'Active' && !isExpired && !seatLimitReached;
         return sendJSON(res, 200, {
-          valid: lic.status === 'Active',
+          valid: isValid,
+          expired: isExpired,
+          seat_limit_reached: seatLimitReached,
+          seats_max: seatsMax,
+          seats_used: machineSet.size,
+          registered_machines: Array.from(machineSet),
           status: lic.status,
           customer_name: lic.customer_name,
           plan: lic.plan_tier,
           expiration_date: lic.expiration_date,
-          days_left: lic.days_left,
+          days_left: computedDaysLeft,
           features: lic.features,
           db_source: 'Supabase Cloud'
         });
@@ -419,7 +520,10 @@ const server = http.createServer(async (req, res) => {
       if (pathname === '/api/licenses/delete' && method === 'DELETE') {
         const body = await parseBody(req);
         const { license_key } = body;
-        await deleteSupabaseLicense(license_key);
+        const deleteErr = await deleteSupabaseLicense(license_key);
+        if (deleteErr) {
+          return sendJSON(res, 500, { success: false, error: deleteErr.message });
+        }
         db.licenses = db.licenses.filter(l => l.license_key !== license_key);
         return sendJSON(res, 200, { success: true, message: `Deleted ${license_key}` });
       }
